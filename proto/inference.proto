@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package inference;
+
+service InferenceService {
+  rpc Predict(PredictRequest) returns (PredictResponse);
+  rpc BatchPredict(BatchPredictRequest) returns (BatchPredictResponse);
+  rpc GetModelInfo(ModelInfoRequest) returns (ModelInfoResponse);
+}
+
+message PredictRequest {
+  string model_name = 1;
+  repeated float features = 2;
+  string request_id = 3;
+}
+
+message PredictResponse {
+  string request_id = 1;
+  repeated float predictions = 2;
+  string predicted_class = 3;
+  float confidence = 4;
+  bool cache_hit = 5;
+  int64 latency_ms = 6;
+}
+
+message BatchPredictRequest {
+  string model_name = 1;
+  repeated PredictRequest requests = 2;
+}
+
+message BatchPredictResponse {
+  repeated PredictResponse responses = 1;
+}
+
+message ModelInfoRequest {
+  string model_name = 1;
+}
+
+message ModelInfoResponse {
+  string model_name = 1;
+  string version = 2;
+  string description = 3;
+  int32 input_features = 4;
+  repeated string output_classes = 5;
+}
